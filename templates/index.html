@@ -9,6 +9,12 @@
 </head>
 <body class="dark-mode">
     <button id="toggle-mode-btn" class="toggle-button"><i class="fas fa-sun"></i></button>
+    <div class="button-container">
+        <h5>Find studies on:</h5>
+        <button class="query-btn" data-query="What are some major findings of lung disease research in women?">lung disease in women</button>
+        <button class="query-btn" data-query="Find recent studies on cocaine addiction">cocaine addiction</button>
+        <button class="query-btn" data-query="Is anyone investigating sleep and cancer?">sleep and cancer</button>
+    </div>
     <div class="chat-container">
         <div class="chat-box" id="chat-box">
             <div class="chat-message bot-message">Hello! What can I help you find today?</div>
@@ -21,32 +27,41 @@
 
     <script>
         $(document).ready(function() {
-            $('#send-btn').click(function() {
+            function sendMessage(message) {
+                $('#chat-box').append('<div class="chat-message user-message">' + message + '</div>');
+                $('#user-input').val('');
+
+                // Add the spinner
+                var spinner = '<div class="chat-message bot-message spinner"><i class="fas fa-circle-notch fa-spin"></i></div>';
+                $('#chat-box').append(spinner);
+
+                $.post('/get_response', { message: message }, function (data) {
+                    // Remove the spinner
+                    $('#chat-box .spinner').remove();
+                    $('#chat-box').append('<div class="chat-message bot-message">' + data.response + '</div>');
+                    $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight); // Auto-scroll to the bottom
+                });
+            }
+
+            $('#send-btn').click(function () {
                 var userMessage = $('#user-input').val();
                 if (userMessage.trim() !== '') {
-                    $('#chat-box').append('<div class="chat-message user-message">' + userMessage + '</div>');
-                    $('#user-input').val('');
-
-                    // Add the spinner
-                    var spinner = '<div class="chat-message bot-message spinner"><i class="fas fa-circle-notch fa-spin"></i></div>';
-                    $('#chat-box').append(spinner);
-
-                    $.post('/get_response', {message: userMessage}, function(data) {
-                        // Remove the spinner
-                        $('#chat-box .spinner').remove();
-                        $('#chat-box').append('<div class="chat-message bot-message">' + data.response + '</div>');
-                        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight); // Auto-scroll to the bottom
-                    });
+                    sendMessage(userMessage);
                 }
             });
 
-            $('#user-input').keypress(function(e) {
+            $('.query-btn').click(function () {
+                var query = $(this).data('query');
+                sendMessage(query);
+            });
+
+            $('#user-input').keypress(function (e) {
                 if (e.which == 13) { // Enter key pressed
                     $('#send-btn').click();
                 }
             });
 
-            $('#toggle-mode-btn').click(function() {
+            $('#toggle-mode-btn').click(function () {
                 $('body').toggleClass('dark-mode light-mode');
                 $('i', this).toggleClass('fa-sun fa-moon');
             });

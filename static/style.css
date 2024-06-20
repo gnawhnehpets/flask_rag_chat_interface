@@ -1,6 +1,5 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #2c2c2c; /* Dark mode by default */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -8,12 +7,13 @@ body {
     height: 100vh;
     margin: 0;
     transition: background-color 0.3s, color 0.3s;
-    color: #f4f4f9;
+    color: #2c2c2c; /* Default to light mode colors */
+    background-color: #f4f4f9; /* Default to light mode background */
 }
 
-body.light-mode {
-    background-color: #f4f4f9;
-    color: #2c2c2c;
+body.dark-mode {
+    background-color: #2c2c2c;
+    color: #f4f4f9;
 }
 
 #toggle-mode-btn {
@@ -23,21 +23,57 @@ body.light-mode {
     background: none;
     border: none;
     font-size: 24px;
-    color: #f4f4f9;
+    color: #2c2c2c;
     cursor: pointer;
     transition: color 0.3s;
 }
 
-body.light-mode #toggle-mode-btn {
-    color: #2c2c2c;
+body.dark-mode #toggle-mode-btn {
+    color: #f4f4f9;
 }
 
 #toggle-mode-btn:hover {
     color: #ffdd00;
 }
 
+.button-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 60%;  /* Align with chat container width */
+    justify-content: space-between;
+}
+
+.button-container h5 {
+    margin: 0;
+    margin-right: 20px;
+    color: inherit;
+}
+
+.query-btn {
+    margin: 5px 0;
+    padding: 10px 20px;
+    background-color: #808080; /* Gray fill */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    flex-grow: 1;
+    text-align: center;
+    margin: 0 5px;
+}
+
+.query-btn:hover {
+    background-color: #666666; /* Darker gray on hover */
+}
+
+body.dark-mode .query-btn {
+    background-color: #666666; /* Gray fill for dark mode */
+}
+
 .chat-container {
-    background-color: #3c3c3c;
+    background-color: #fff;
     width: 60%;  /* Wider chat window */
     max-height: 80%; /* Expand to 80% of the browser window height */
     border-radius: 8px;
@@ -50,8 +86,8 @@ body.light-mode #toggle-mode-btn {
     min-height: 200px; /* Initial minimal height */
 }
 
-body.light-mode .chat-container {
-    background-color: #fff;
+body.dark-mode .chat-container {
+    background-color: #3c3c3c;
 }
 
 .chat-box {
@@ -72,8 +108,8 @@ body.light-mode .chat-container {
     text-align: right;
 }
 
-body.light-mode .user-message {
-    background-color: #d1e7dd;
+body.dark-mode .user-message {
+    background-color: #a2d5c6;
 }
 
 .bot-message {
@@ -86,30 +122,30 @@ body.light-mode .bot-message {
 
 .chat-input-container {
     display: flex;
-    border-top: 1px solid #5c5c5c;
+    border-top: 1px solid #ddd;
     padding: 10px;
-    background-color: #2c2c2c;
+    background-color: #f4f4f9;
 }
 
-body.light-mode .chat-input-container {
-    border-top: 1px solid #ddd;
-    background-color: #f4f4f9;
+body.dark-mode .chat-input-container {
+    border-top: 1px solid #5c5c5c;
+    background-color: #2c2c2c;
 }
 
 input[type="text"] {
     width: calc(100% - 100px);
     padding: 10px;
-    border: 2px solid #5c5c5c;
+    border: 2px solid #ddd;
     border-radius: 5px;
-    background-color: #4c4c4c;
-    color: #f4f4f9;
+    background-color: #fff;
+    color: #2c2c2c;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-body.light-mode input[type="text"] {
-    background-color: #fff;
-    color: #2c2c2c;
-    border-color: #ddd;
+body.dark-mode input[type="text"] {
+    background-color: #4c4c4c;
+    color: #f4f4f9;
+    border-color: #5c5c5c;
 }
 
 button {
@@ -128,7 +164,7 @@ button:hover {
     background-color: #005bb5;
 }
 
-body.light-mode button {
+body.dark-mode button {
     background-color: #005bb5;
 }
 
