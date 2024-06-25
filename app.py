@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import requests
 import logging
 import time
+import re
 
 app = Flask(__name__)
 
@@ -11,6 +12,23 @@ logging.basicConfig(level=logging.DEBUG)
 @app.route('/')
 def home():
     return render_template('index.html')
+
+def add_hyperlink(text):
+    # Regex to find standalone phs ID (e.g., phs123456) not part of a URL
+    phs_pattern = r'\b(phs\d{6})\b(?![^<]*<\/a>)'
+    phs_replacement = r'<a href="https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=\1" target="_blank">\1</a>'
+
+    # Regex to find URLs
+    url_pattern = r'(https?://[^\s]+)'
+    url_replacement = r'<a href="\1">\1</a>'
+
+    # First, replace URLs with hyperlinks
+    text = re.sub(url_pattern, url_replacement, text)
+
+    # Then, replace standalone phs IDs with hyperlinks
+    text = re.sub(phs_pattern, phs_replacement, text)
+
+    return text
 
 @app.route('/get_response', methods=['POST'])
 def get_response():
@@ -40,6 +58,7 @@ def get_response():
         logging.debug(f"Response received: {response.json()}")
 
         bot_response = response.json().get('output', {}).get('result', 'Sorry, I did not understand that.')
+        bot_response = add_hyperlink(bot_response)
     except requests.exceptions.HTTPError as http_err:
         logging.error(f"HTTP error occurred: {http_err}")
         bot_response = 'Sorry, there was an error processing your request.'

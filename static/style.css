@@ -38,8 +38,8 @@ body.dark-mode #toggle-mode-btn {
 
 .button-container {
     display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+    align-items: stretch;
+    margin-bottom: 20px;
     width: 60%;  /* Align with chat container width */
     justify-content: space-between;
 }
@@ -48,11 +48,12 @@ body.dark-mode #toggle-mode-btn {
     margin: 0;
     margin-right: 20px;
     color: inherit;
+    padding: 20px 0;
 }
 
 .query-btn {
-    margin: 5px 0;
-    padding: 10px 20px;
+    margin: 10px 0;
+    padding: 15px 20px;
     background-color: #808080; /* Gray fill */
     color: #fff;
     border: none;
@@ -61,7 +62,7 @@ body.dark-mode #toggle-mode-btn {
     transition: background-color 0.3s;
     flex-grow: 1;
     text-align: center;
-    margin: 0 5px;
+    margin: 0 20px;
 }
 
 .query-btn:hover {
@@ -113,11 +114,11 @@ body.dark-mode .user-message {
 }
 
 .bot-message {
-    background-color: #e59393;
+    background-color: #7b97fc;
 }
 
 body.light-mode .bot-message {
-    background-color: #f8d7da;
+    background-color: #5793f9;
 }
 
 .chat-input-container {
