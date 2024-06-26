@@ -6,15 +6,34 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .button-container {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+        }
+
+        .query-btn {
+            flex: 1;
+            margin: 5px 10px;
+            padding: 10px;
+            text-align: center;
+            transition: height 0.3s;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+    </style>
 </head>
 <body class="dark-mode">
     <button id="toggle-mode-btn" class="toggle-button"><i class="fas fa-sun"></i></button>
     <div class="button-container">
         <h5>Topics of interest:</h5>
-        <button class="query-btn" data-query="Find studies on asthma, provide links if possible">asthma</button>
-        <button class="query-btn" data-query="What are some major findings of lung disease research in women?">lung disease in women</button>
-        <button class="query-btn" data-query="Find recent studies on cocaine addiction">cocaine addiction</button>
-        <button class="query-btn" data-query="Is anyone investigating sleep and cancer?">sleep and cancer</button>
+        <button class="query-btn" data-query="asthma">asthma</button>
+        <button class="query-btn" data-query="addiction">addiction</button>
+        <button class="query-btn" data-query="cardiovascular disease">heart disease</button>
+        <button class="query-btn" data-query="atherosclerosis">atherosclerosis</button>
+        <button class="query-btn" data-query="sleep">sleep</button>
     </div>
     <div class="chat-container">
         <div class="chat-box" id="chat-box">
@@ -52,8 +71,24 @@
             });
 
             $('.query-btn').click(function () {
-                var query = $(this).data('query');
-                sendMessage(query);
+                var dataQuery = $(this).data('query');
+                var queryFormats = [
+                    "What are some major findings in " + dataQuery + " research?",
+                    "Find recent studies on " + dataQuery,
+                    "Is anyone investigating " + dataQuery + "?",
+                    "What are the current trends in " + dataQuery + " research?",
+                    "Who is studying " + dataQuery + "?",
+                    // "What are the key topics in " + dataQuery + " research?",
+                    // "Find the latest publications on " + dataQuery,
+                    "What are the most common keywords in " + dataQuery + " research?",
+                    // "What are the most active institutions in " + dataQuery + " research?",
+                    "What are the most common methodologies in " + dataQuery + " research?",
+                    "What are the most common study designs in " + dataQuery + " research?",
+                    // "What are the most common data sources in " + dataQuery + " research?",
+                    "What are the most common funding sources in " + dataQuery + " research?"
+                ];
+                var randomQuery = queryFormats[Math.floor(Math.random() * queryFormats.length)];
+                sendMessage(randomQuery);
             });
 
             $('#user-input').keypress(function (e) {
