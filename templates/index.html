@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Chatbot</title>
+    <title>DUG LLM Chatbot</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         .button-container {
@@ -28,7 +29,7 @@
 <body class="dark-mode">
     <button id="toggle-mode-btn" class="toggle-button"><i class="fas fa-sun"></i></button>
     <div class="button-container">
-        <h5>Topics of interest:</h5>
+        <h5>Generate questions<br/>on topics of interest:</h5>
         <button class="query-btn" data-query="asthma">asthma</button>
         <button class="query-btn" data-query="addiction">addiction</button>
         <button class="query-btn" data-query="cardiovascular disease">heart disease</button>
@@ -40,7 +41,7 @@
             <div class="chat-message bot-message">Hello! What can I help you find today?</div>
         </div>
         <div class="chat-input-container">
-            <input type="text" id="user-input" placeholder="e.g. 'find studies on sleep', 'who is studying cocaine addiction?', 'is anyone looking at COPD in women?', etc." autofocus>
+            <input type="text" id="user-input" placeholder="Ask your question here (e.g. 'find COPD studies', 'who is studying cocaine addiction?', etc.)" autofocus>
             <button id="send-btn">Send</button>
         </div>
     </div>

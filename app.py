@@ -15,7 +15,7 @@ def home():
 
 def add_hyperlink(text):
     # Regex to find standalone phs ID (e.g., phs123456) not part of a URL
-    phs_pattern = r'\b(phs\d{6})\b(?![^<]*<\/a>)'
+    phs_pattern = r'\b(phs\d{4,})\b(?![^<]*<\/a>)'
     phs_replacement = r'<a href="https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=\1" target="_blank">\1</a>'
 
     # Regex to find URLs
@@ -26,9 +26,13 @@ def add_hyperlink(text):
     text = re.sub(url_pattern, url_replacement, text)
 
     # Then, replace standalone phs IDs with hyperlinks
-    text = re.sub(phs_pattern, phs_replacement, text)
+    text = re.sub(phs_pattern, phs_replacement, text, flags=re.IGNORECASE)
 
     return text
+
+def format_response(text):
+    # Replace newlines with <br> tags
+    return text.replace('\n', '<br>')
 
 @app.route('/get_response', methods=['POST'])
 def get_response():
@@ -59,6 +63,7 @@ def get_response():
 
         bot_response = response.json().get('output', {}).get('result', 'Sorry, I did not understand that.')
         bot_response = add_hyperlink(bot_response)
+        bot_response = format_response(bot_response)  # Format response to replace newlines with <br>
     except requests.exceptions.HTTPError as http_err:
         logging.error(f"HTTP error occurred: {http_err}")
         bot_response = 'Sorry, there was an error processing your request.'
