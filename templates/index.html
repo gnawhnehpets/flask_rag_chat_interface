@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>DUG LLM Chatbot</title>
@@ -26,12 +27,15 @@
         }
     </style>
 </head>
+
+<!-- path to endpoint as .env, dockerize -->
+
 <body class="dark-mode">
     <button id="toggle-mode-btn" class="toggle-button"><i class="fas fa-sun"></i></button>
     <div class="button-container">
-        <h5>Generate questions<br/>on topics of interest:</h5>
+        <h5>Generate questions<br />on topics of interest:</h5>
         <button class="query-btn" data-query="asthma">asthma</button>
-        <button class="query-btn" data-query="addiction">addiction</button>
+        <button class="query-btn" data-query="genomics">genomics</button>
         <button class="query-btn" data-query="cardiovascular disease">heart disease</button>
         <button class="query-btn" data-query="atherosclerosis">atherosclerosis</button>
         <button class="query-btn" data-query="sleep">sleep</button>
@@ -41,13 +45,15 @@
             <div class="chat-message bot-message">Hello! What can I help you find today?</div>
         </div>
         <div class="chat-input-container">
-            <input type="text" id="user-input" placeholder="Ask your question here (e.g. 'find COPD studies', 'who is studying cocaine addiction?', etc.)" autofocus>
+            <input type="text" id="user-input"
+                placeholder="Ask your question here (e.g. 'find COPD studies', 'who is studying cocaine addiction?', etc.)"
+                autofocus>
             <button id="send-btn">Send</button>
         </div>
     </div>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             function sendMessage(message) {
                 $('#chat-box').append('<div class="chat-message user-message">' + message + '</div>');
                 $('#user-input').val('');
@@ -55,13 +61,19 @@
                 // Add the spinner
                 var spinner = '<div class="chat-message bot-message spinner"><i class="fas fa-circle-notch fa-spin"></i></div>';
                 $('#chat-box').append(spinner);
+                scrollToBottom(); // Ensure chat box is scrolled to the bottom after adding user message and spinner
 
                 $.post('/get_response', { message: message }, function (data) {
                     // Remove the spinner
                     $('#chat-box .spinner').remove();
                     $('#chat-box').append('<div class="chat-message bot-message">' + data.response + '</div>');
-                    $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight); // Auto-scroll to the bottom
+                    scrollToBottom(); // Scroll to the bottom after the bot response is added
                 });
+            }
+
+            function scrollToBottom() {
+                var chatBox = $('#chat-box');
+                chatBox.scrollTop(chatBox.prop("scrollHeight"));
             }
 
             $('#send-btn').click(function () {
@@ -72,19 +84,17 @@
             });
 
             $('.query-btn').click(function () {
-                var dataQuery = $(this).data('query');
-                var queryFormats = [
-                    "What are some major findings in " + dataQuery + " research?",
-                    "Find recent studies on " + dataQuery,
-                    "Is anyone investigating " + dataQuery + "?",
-                    "What are the current trends in " + dataQuery + " research?",
-                    "Who is studying " + dataQuery + "?",
-                    "What are the most common keywords in " + dataQuery + " research?",
-                    "What are the most common methodologies in " + dataQuery + " research?",
-                    "What are the most common study designs in " + dataQuery + " research?",
-                    "What are the most common funding sources in " + dataQuery + " research?"
+                var topicQuery = $(this).data('query');
+                var queryTemplate = [
+                    "What are some major findings in " + topicQuery + " research?",
+                    "Find recent studies on " + topicQuery,
+                    "Is anyone investigating " + topicQuery + "?",
+                    "What are the current trends in " + topicQuery + " research?",
+                    "Who is studying " + topicQuery + "?",
+                    "What are the most common keywords in " + topicQuery + " research?",
+                    "What are the most common study designs in " + topicQuery + " research?"
                 ];
-                var randomQuery = queryFormats[Math.floor(Math.random() * queryFormats.length)];
+                var randomQuery = queryTemplate[Math.floor(Math.random() * queryTemplate.length)];
                 sendMessage(randomQuery);
             });
 
@@ -99,6 +109,8 @@
                 $('i', this).toggleClass('fa-sun fa-moon');
             });
         });
+
     </script>
 </body>
+
 </html>

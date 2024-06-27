@@ -3,11 +3,11 @@ import requests
 import logging
 import time
 import re
+import os
 
 app = Flask(__name__)
 
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.CRITICAL)
 
 @app.route('/')
 def home():
@@ -32,12 +32,14 @@ def add_hyperlink(text):
 
 def format_response(text):
     # Replace newlines with <br> tags
+    text = text.replace('**', '')
     return text.replace('\n', '<br>')
 
 @app.route('/get_response', methods=['POST'])
 def get_response():
     user_message = request.form['message']
-    api_url = 'https://koios-llama.apps.renci.org/dug-qa/invoke'
+    # + "Provide dbgap ids and/or links to resources when possible. Only provide dbgap IDs if they are valid (e.g. at least six contiguous digits long IDs without hyphens or spaces ). If invalid dbgap IDs are returned, do not display or mention them."
+    api_url = os.getenv('API_URL')
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
