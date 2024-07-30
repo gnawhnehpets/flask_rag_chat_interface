@@ -7,13 +7,13 @@ body {
     height: 100vh;
     margin: 50px; /* margin from top */
     transition: background-color 0.3s, color 0.3s;
-    color: #2c2c2c; /* Default to light mode colors */
+    color: #393939; /* Default to light mode colors */
     background-color: #f4f4f9; /* Default to light mode background */
     overflow: hidden; /* Prevent horizontal scroll */
 }
 
 body.dark-mode {
-    background-color: #2c2c2c;
+    background-color: #393939;
     color: #f4f4f9;
 }
 
@@ -24,7 +24,7 @@ body.dark-mode {
     background: none;
     border: none;
     font-size: 24px;
-    color: #2c2c2c;
+    color: #393939;
     cursor: pointer;
     transition: color 0.3s;
 }
@@ -59,8 +59,8 @@ body.dark-mode #toggle-mode-btn:hover {
 .query-btn {
     margin: 10px 0;
     padding: 15px 20px;
-    background-color: #808080; /* Gray fill */
-    color: #2c2c2c;
+    background-color: #616265; /* Gray fill */
+    color: #393939;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -71,11 +71,11 @@ body.dark-mode #toggle-mode-btn:hover {
 }
 
 .query-btn:hover {
-    background-color: #666666; /* Darker gray on hover */
+    background-color: #41ABF5; /* Darker gray on hover */
 }
 
 body.dark-mode .query-btn {
-    background-color: #666666; /* Gray fill for dark mode */
+    background-color: #616265; /* Gray fill for dark mode */
     color: #fff; /* White text for dark mode */
 }
 
@@ -84,8 +84,8 @@ body.dark-mode .query-btn:hover {
 }
 
 .chat-container {
-    background-color: #fff;
-    width: 60%;  /* Wider chat window */
+    background-color: #616265;
+    width: 75%;  /* Wider chat window */
     max-height: 80%; /* Expand to 80% of the browser window height */
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -117,32 +117,37 @@ body.dark-mode .chat-container {
 }
 
 .user-message {
-    background-color: #a2d5c6;
+    background-color: #1a568c;
     text-align: right;
 }
 
 body.dark-mode .user-message {
-    background-color: #a2d5c6;
+    background-color: #1a568c;
+    color: #fff;
 }
 
 .bot-message {
-    background-color: #7b97fc;
+    background-color: #41ABF5;
+}
+
+body.dark-mode .bot-message {
+    color: #fff;
 }
 
 body.light-mode .bot-message {
-    background-color: #86b2ff;
+    background-color: #41ABF5;
 }
 
 .chat-input-container {
     display: flex;
     border-top: 1px solid #ddd;
     padding: 10px;
-    background-color: #f4f4f9;
+    background-color: #616265;
 }
 
 body.dark-mode .chat-input-container {
-    border-top: 1px solid #5c5c5c;
-    background-color: #2c2c2c;
+    border-top: 1px solid #616265;
+    background-color: #616265;
 }
 
 input[type="text"] {
@@ -151,21 +156,21 @@ input[type="text"] {
     border: 2px solid #ddd;
     border-radius: 5px;
     background-color: #fff;
-    color: #2c2c2c;
+    color: #393939;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 body.dark-mode input[type="text"] {
     background-color: #4c4c4c;
     color: #f4f4f9;
-    border-color: #5c5c5c;
+    border-color: #616265;
 }
 
 button {
     width: 80px;
     padding: 10px;
     border: none;
-    background-color: #35944b;
+    background-color: #1a568c;
     color: #fff;
     cursor: pointer;
     border-radius: 5px;
@@ -174,15 +179,15 @@ button {
 }
 
 button:hover {
-    background-color: #178130;
+    background-color: #41ABF5;
 }
 
 body.dark-mode button {
-    background-color: #529060;
+    background-color: #1a568c;
 }
 
 body.dark-mode button:hover {
-    background-color: #3ea147;
+    background-color: #41ABF5;
 }
 
 /* Spinner Styles */

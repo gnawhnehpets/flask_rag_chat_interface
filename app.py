@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, url_for
 import requests
 import logging
 import time
@@ -11,7 +11,9 @@ logging.basicConfig(level=logging.CRITICAL)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    banner_image_url = url_for('static', filename='images/banner.png')  # Example static image
+    return render_template('index.html', banner_image_url=banner_image_url)
+    # return render_template('index.html')
 
 def add_hyperlink(text):
     # Regex to find standalone phs ID (e.g., phs123456) not part of a URL
@@ -46,14 +48,16 @@ def get_response():
     }
     payload = {
         "input": {
-            "question": user_message
+            "input": "what studies are available",
+            "chat_history": [    ]
         },
         "config": {},
         "kwargs": {}
     }
 
     # Add a unique query parameter to prevent caching
-    unique_url = f"{api_url}?_={int(time.time())}"
+    # unique_url = f"{api_url}?_={int(time.time())}"
+    unique_url = f"{api_url}"
 
     logging.debug(f"Payload being sent to API: {payload}")
 

@@ -25,13 +25,32 @@
             white-space: normal;
             overflow-wrap: break-word;
         }
+
+        .banner-container {
+            width: 80%;
+            display: flex;
+            align-items: center;
+        }
+
+        .banner {
+            width: 35%;
+            height: auto;
+            display: block;
+        }
     </style>
 </head>
 
 <!-- path to endpoint as .env, dockerize -->
 
-<body class="dark-mode">
+<!-- <body class="dark-mode"> -->
+<body class="light-mode">
     <button id="toggle-mode-btn" class="toggle-button"><i class="fas fa-sun"></i></button>
+
+    <!-- <img src="{{ banner_image_url }}" alt="Banner" class="banner"> -->
+    <div class="banner-container">
+        <img src="{{ banner_image_url }}" alt="Banner" class="banner">
+    </div>
+    <br/>
     <div class="button-container">
         <h5>Generate questions<br />on topics of interest:</h5>
         <button class="query-btn" data-query="asthma">asthma</button>
