@@ -22,6 +22,9 @@ payload = {
 
 @app.route('/')
 def home():
+    # Clear the chat history whenever the home page is accessed
+    payload['input']['chat_history'] = []
+    
     banner_image_url = url_for('static', filename='images/banner.png')  # Example static image
     return render_template('index.html', banner_image_url=banner_image_url)
     # return render_template('index.html')
@@ -99,6 +102,17 @@ def get_response():
         bot_response = 'Sorry, there was an error processing your request.'
 
     return jsonify({'response': bot_response})
+
+@app.route('/export_chat_history')
+def export_chat_history():
+    chat_history_json = json.dumps(payload['input']['chat_history'], indent=4)
+    chat_history_bytes = BytesIO(chat_history_json.encode('utf-8'))
+    chat_history_bytes.seek(0)
+
+    return send_file(chat_history_bytes,
+                     mimetype='application/json',
+                     as_attachment=True,
+                     download_name='chat_history.json')
 
 if __name__ == '__main__':
     app.run(debug=True)

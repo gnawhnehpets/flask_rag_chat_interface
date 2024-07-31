@@ -40,13 +40,9 @@
     </style>
 </head>
 
-<!-- path to endpoint as .env, dockerize -->
-
-<!-- <body class="dark-mode"> -->
 <body class="light-mode">
     <button id="toggle-mode-btn" class="toggle-button"><i class="fas fa-sun"></i></button>
 
-    <!-- <img src="{{ banner_image_url }}" alt="Banner" class="banner"> -->
     <div class="banner-container">
         <img src="{{ banner_image_url }}" alt="Banner" class="banner">
     </div>
@@ -68,6 +64,7 @@
                 placeholder="Ask your question here (e.g. 'find COPD studies', 'who is studying cocaine addiction?', etc.)"
                 autofocus>
             <button id="send-btn">Send</button>
+            <button id="export-btn">Export chat history</button>
         </div>
     </div>
 
@@ -77,16 +74,14 @@
                 $('#chat-box').append('<div class="chat-message user-message">' + message + '</div>');
                 $('#user-input').val('');
 
-                // Add the spinner
                 var spinner = '<div class="chat-message bot-message spinner"><i class="fas fa-circle-notch fa-spin"></i></div>';
                 $('#chat-box').append(spinner);
-                scrollToBottom(); // Ensure chat box is scrolled to the bottom after adding user message and spinner
+                scrollToBottom();
 
                 $.post('/get_response', { message: message }, function (data) {
-                    // Remove the spinner
                     $('#chat-box .spinner').remove();
                     $('#chat-box').append('<div class="chat-message bot-message">' + data.response + '</div>');
-                    scrollToBottom(); // Scroll to the bottom after the bot response is added
+                    scrollToBottom();
                 });
             }
 
@@ -126,6 +121,10 @@
             $('#toggle-mode-btn').click(function () {
                 $('body').toggleClass('dark-mode light-mode');
                 $('i', this).toggleClass('fa-sun fa-moon');
+            });
+
+            $('#export-btn').click(function () {
+                window.location.href = '/export_chat_history';
             });
         });
 
