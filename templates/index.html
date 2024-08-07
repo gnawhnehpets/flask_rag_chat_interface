@@ -44,7 +44,7 @@
     <button id="toggle-mode-btn" class="toggle-button"><i class="fas fa-sun"></i></button>
 
     <div class="banner-container">
-        <!-- <img src="{{ banner_image_url }}" alt="Banner" class="banner"> -->
+         <img src="{{ banner_image_url }}" alt="Banner" class="banner">
     </div>
     <br/>
     <div class="button-container">
@@ -78,7 +78,7 @@
                 $('#chat-box').append(spinner);
                 scrollToBottom();
 
-                $.post('/get_response', { message: message }, function (data) {
+                $.post("{{ url_for('get_response') }}", { message: message }, function (data) {
                     $('#chat-box .spinner').remove();
                     $('#chat-box').append('<div class="chat-message bot-message">' + data.response + '</div>');
                     scrollToBottom();
@@ -124,7 +124,7 @@
             });
 
             $('#export-btn').click(function () {
-                window.location.href = '/export_chat_history';
+                window.location.href = "{{ url_for('export_chat_history') }}";
             });
         });
 
