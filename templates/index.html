@@ -37,6 +37,36 @@
             height: auto;
             display: block;
         }
+
+        .chat-input-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-input-container button {
+            margin: 5px 5px;
+            padding: 5px;
+            text-align: center;
+            height: 80%;
+            min-height: 20px;
+            flex: 1;
+            /* Make all buttons have equal width */
+            border: none;
+        }
+
+        /* Clear Chat specific styles */
+        .clear-chat-btn {
+            background-color: red;
+            color: white;
+        }
+
+        .chat-input-container input {
+            margin: 5px 10px;
+            padding: 10px;
+            flex: 2;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -46,14 +76,14 @@
     <div class="banner-container">
         <!-- <img src="{{ banner_image_url }}" alt="Banner" class="banner"> -->
     </div>
-    <br/>
+    <br />
     <div class="button-container">
         <h5>Generate questions<br />on topics of interest:</h5>
         <button class="query-btn" data-query="asthma">asthma</button>
         <button class="query-btn" data-query="genomics">genomics</button>
         <button class="query-btn" data-query="cardiovascular disease">heart disease</button>
         <button class="query-btn" data-query="atherosclerosis">atherosclerosis</button>
-        <button class="query-btn" data-query="sleep">sleep</button>
+        <button class="query-btn" data-query="sickle cell">sickle cell</button>
     </div>
     <div class="chat-container">
         <div class="chat-box" id="chat-box">
@@ -65,7 +95,13 @@
                 autofocus>
             <button id="send-btn">Send</button>
             <button id="export-btn">Export chat history</button>
+            <button id="clear-chat-btn" class="clear-chat-btn">Clear Chat</button>
         </div>
+    </div>
+    <div class="button-container">
+        <p>Disclaimer: To ensure data privacy, the chat history is only kept client-side. RENCI/RTI do not retain any
+            personal identifiable information or IP address with any chat session. Please note this current
+            implementation is a prototype.</p>
     </div>
 
     <script>
@@ -99,16 +135,32 @@
 
             $('.query-btn').click(function () {
                 var topicQuery = $(this).data('query');
-                var queryTemplate = [
-                    "What are some major findings in " + topicQuery + " research?",
-                    "Find recent studies on " + topicQuery,
-                    "Is anyone investigating " + topicQuery + "?",
-                    "What are the current trends in " + topicQuery + " research?",
-                    "Who is studying " + topicQuery + "?",
-                    "What are the most common keywords in " + topicQuery + " research?",
-                    "What are the most common study designs in " + topicQuery + " research?"
-                ];
-                var randomQuery = queryTemplate[Math.floor(Math.random() * queryTemplate.length)];
+
+                if (topicQuery === 'sickle cell') {
+                    // Predefined list of questions for "sickle cell"
+                    var sickleCellQuestions = [
+                        "What type of conditioning regimen was used in the study for patients with sickle cell disease undergoing bone marrow transplantation.",
+                        "What specific neurologic criteria were used to include patients with sickle cell disease in the study on unrelated donor hematopoietic stem cell transplantation.",
+                        "What was the dose of Melphalan administered in the study on unrelated donor hematopoietic stem cell transplantation for sickle cell disease.",
+                        "What was the primary outcome measured in the study on unrelated donor hematopoietic stem cell transplantation for sickle cell disease.",
+                        "What is the primary symptom of pulmonary arterial hypertension in sickle cell disease.",
+                        "How many infants were enrolled during Phase 1 of the Cooperative Study of Sickle Cell Disease.",
+                        "What percentage of patients with severe sickle cell disease have an HLA-matched sibling donor."
+                    ];
+                    var randomQuery = sickleCellQuestions[Math.floor(Math.random() * sickleCellQuestions.length)];
+                } else {
+                    // Default query template for other topics
+                    var queryTemplate = [
+                        "What are some major findings in " + topicQuery + " research?",
+                        "Find recent studies on " + topicQuery,
+                        "Is anyone investigating " + topicQuery + "?",
+                        "What are the current trends in " + topicQuery + " research?",
+                        "Who is studying " + topicQuery + "?",
+                        "What are the most common keywords in " + topicQuery + " research?",
+                        "What are the most common study designs in " + topicQuery + " research?"
+                    ];
+                    var randomQuery = queryTemplate[Math.floor(Math.random() * queryTemplate.length)];
+                }
                 sendMessage(randomQuery);
             });
 
@@ -126,8 +178,19 @@
             $('#export-btn').click(function () {
                 window.location.href = '/export_chat_history';
             });
-        });
 
+            // Clear chat history with confirmation
+            $('#clear-chat-btn').click(function () {
+                if (confirm("Are you sure you want to clear the chat history?")) {
+                    $.post('/clear_history', function (data) {
+                        if (data.status === 'success') {
+                            $('#chat-box').empty();  // Clear the chat box in the frontend
+                            $('#chat-box').append('<div class="chat-message bot-message">You have cleared the chat history. What can I help you find today?</div>');
+                        }
+                    });
+                }
+            });
+        });
     </script>
 </body>
 

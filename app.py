@@ -1,14 +1,16 @@
-from flask import Flask, render_template, request, jsonify, url_for, send_file
+from flask import Flask, render_template, request, jsonify, url_for, send_file, session
 import requests
 import logging
 import time
 import re
 import os
 import json
+import uuid
 from io import BytesIO
 app = Flask(__name__)
 
 logging.basicConfig(level=logging.WARNING)
+app.secret_key = str(uuid.uuid4())  # Needed to use sessions
 
 # instantiate payload
 payload = {
@@ -20,8 +22,18 @@ payload = {
         "kwargs": {}
     }
 
+def generate_session_id():
+    return str(uuid.uuid4())
+
 @app.route('/')
 def home():
+    # Generate a new session_id if not already in session
+    if 'session_id' not in session:
+        session['session_id'] = str(uuid.uuid4())  # Generate a random session_id
+        logging.debug(f"New session_id created: {session['session_id']}")
+    else:
+        logging.debug(f"Existing session_id: {session['session_id']}")
+
     # Clear the chat history whenever the home page is accessed
     payload['input']['chat_history'] = []
     
@@ -51,6 +63,8 @@ def format_response(text):
     text = text.replace('**', '')
     return text.replace('\n', '<br>')
 
+
+
 @app.route('/get_response', methods=['POST'])
 def get_response():
     user_message = request.form['message']
@@ -67,7 +81,12 @@ def get_response():
     #     "config": {},
     #     "kwargs": {}
     # }
+
+    # Attach the session_id to the payload
+    session_id = session.get('session_id', 'unknown')
     payload['input']['input'] = user_message
+    payload['session_id'] = session_id  # Add session_id to payload
+
     print(payload)
 
     unique_url = f"{api_url}"
@@ -113,6 +132,12 @@ def export_chat_history():
                      mimetype='application/json',
                      as_attachment=True,
                      download_name='chat_history.json')
+
+@app.route('/clear_history', methods=['POST'])
+def clear_history():
+    # Clear the chat history in the payload
+    payload['input']['chat_history'] = []
+    return jsonify({'status': 'success', 'message': 'Chat history cleared.'})
 
 if __name__ == '__main__':
     app.run(debug=True)
