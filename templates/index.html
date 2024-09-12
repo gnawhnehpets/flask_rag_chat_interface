@@ -182,7 +182,7 @@
             // Clear chat history with confirmation
             $('#clear-chat-btn').click(function () {
                 if (confirm("Are you sure you want to clear the chat history?")) {
-                    $.post('/clear_history', function (data) {
+                    $.post("{{ url_for('clear_history') }}", function (data) {
                         if (data.status === 'success') {
                             $('#chat-box').empty();  // Clear the chat box in the frontend
                             $('#chat-box').append('<div class="chat-message bot-message">You have cleared the chat history. What can I help you find today?</div>');
