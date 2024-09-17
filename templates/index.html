@@ -14,6 +14,22 @@
             flex-direction: row;
             align-items: stretch;
         }
+        
+        .contact-us {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            font-size: 13px;
+            max-width: 60%;
+        }
+
+        .disclaimer-container {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            font-size: 11px;
+            max-width: 60%;
+        }
 
         .query-btn {
             flex: 1;
@@ -41,23 +57,8 @@
         .chat-input-container {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-input-container button {
-            margin: 5px 5px;
-            padding: 5px;
-            text-align: center;
-            height: 80%;
-            min-height: 20px;
-            flex: 1;
-            border: none;
-        }
-
-        /* Clear Chat specific styles */
-        .clear-chat-btn {
-            background-color: red;
-            color: white;
+            align-items: stretch;
+            gap: 10px;
         }
 
         .chat-input-container textarea {
@@ -68,6 +69,61 @@
             resize: none;
             overflow: hidden;
             box-sizing: border-box;
+        }
+
+        .send-btn-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: stretch;
+            flex: 1;
+            max-width: 20%;
+            padding-right: 20px;
+        }
+
+        .send-btn-container button {
+            padding: 10px;
+            text-align: center;
+            height: 100%;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+            gap: 5px;
+            padding-right: 20px;
+            max-width: 15%;
+        }
+
+        .btn-group button {
+            padding: 10px;
+            text-align: center;
+            border: none;
+            width: 100%;
+            height: 50%;
+        }
+
+        /* Clear Chat specific styles */
+        .clear-chat-btn {
+            background-color: red;
+            color: white;
+        }
+
+        /* Ensure buttons and text area are responsive on smaller screens */
+        @media (max-width: 900px) {
+            .chat-input-container {
+                flex-direction: column;
+            }
+
+            .send-btn-container,
+            .btn-group,
+            .chat-input-container textarea {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -92,22 +148,39 @@
             <div class="chat-message bot-message">Hello! What can I help you find today?</div>
         </div>
         <div class="chat-input-container">
-            <!-- Textarea input for user message -->
-            <textarea id="user-input" placeholder="Ask your question here (e.g. 'find COPD studies', 'who is studying cocaine addiction?', etc.)" autofocus></textarea>
-            <button id="send-btn">Send</button>
-            <button id="export-btn">Export chat history</button>
-            <button id="clear-chat-btn" class="clear-chat-btn">Clear Chat</button>
+            <!-- Text area input -->
+            <textarea id="user-input" placeholder="Ask your question here (e.g. 'find COPD studies', 'who is studying cocaine addiction?', etc.)"
+                      rows="1" autofocus></textarea>
+
+            <!-- Column 1: Send Button -->
+            <div class="send-btn-container">
+                <button id="send-btn">Send</button>
+            </div>
+
+            <!-- Column 2: Export and Clear Chat Buttons stacked -->
+            <div class="btn-group">
+                <button id="export-btn">Export chat history</button>
+                <button id="clear-chat-btn" class="clear-chat-btn">Clear Chat</button>
+            </div>
         </div>
     </div>
-    <div class="button-container">
-        <p>Disclaimer: To ensure data privacy, the chat history is only kept client-side. RENCI/RTI do not retain any
-            personal identifiable information or IP address with any chat session. Please note this current
-            implementation is a prototype.</p>
+    <div class="contact-us">
+        <p>For questions or feedback, please vist <a href="http://link-to-google-form">[link to google form]</a>. For more information about the BioData Catalyst, please visit <a href="https://biodatacatalyst.nhlbi.nih.gov/">https://biodatacatalyst.nhlbi.nih.gov/</a>.
+        </p>
+    </div>
+    <div class="disclaimer-container">
+        <p>Disclaimer:</p>
+        <p><ul>
+            <li>The chatbot logs will be de-identified and preserved by the BioData Catalyst Study Chatbot Team for quality assurance purposes, though not shared with the public.</li>
+            <li>The chatbot is designed to answer queries about study abstracts and find studies that might be relevant to the user. Any queries outside of that core scope might result in inaccurate, erroneous, or fabricated responses due to design principles of the underlying LLM. Please exercise caution when executing such queries.</li>
+            <li>The chatbot does not have full implementation of content moderation guardrails, and therefore conversations outside of the abovementioned scope may result in uncouth or inappropriate responses.</li>
+        </p>
+        </ul></p>
     </div>
 
     <script>
         $(document).ready(function () {
-            // Auto-expand the textarea as the user types
+            // Auto-expand textarea as the user types
             $('#user-input').on('input', function () {
                 this.style.height = 'auto';  // Reset height to auto to adjust for shrinking
                 this.style.height = (this.scrollHeight) + 'px';  // Set height based on scrollHeight
