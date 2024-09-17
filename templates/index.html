@@ -51,7 +51,6 @@
             height: 80%;
             min-height: 20px;
             flex: 1;
-            /* Make all buttons have equal width */
             border: none;
         }
 
@@ -61,11 +60,14 @@
             color: white;
         }
 
-        .chat-input-container input {
+        .chat-input-container textarea {
             margin: 5px 10px;
             padding: 10px;
             flex: 2;
             font-size: 14px;
+            resize: none;
+            overflow: hidden;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -90,9 +92,8 @@
             <div class="chat-message bot-message">Hello! What can I help you find today?</div>
         </div>
         <div class="chat-input-container">
-            <input type="text" id="user-input"
-                placeholder="Ask your question here (e.g. 'find COPD studies', 'who is studying cocaine addiction?', etc.)"
-                autofocus>
+            <!-- Textarea input for user message -->
+            <textarea id="user-input" placeholder="Ask your question here (e.g. 'find COPD studies', 'who is studying cocaine addiction?', etc.)" autofocus></textarea>
             <button id="send-btn">Send</button>
             <button id="export-btn">Export chat history</button>
             <button id="clear-chat-btn" class="clear-chat-btn">Clear Chat</button>
@@ -106,9 +107,16 @@
 
     <script>
         $(document).ready(function () {
+            // Auto-expand the textarea as the user types
+            $('#user-input').on('input', function () {
+                this.style.height = 'auto';  // Reset height to auto to adjust for shrinking
+                this.style.height = (this.scrollHeight) + 'px';  // Set height based on scrollHeight
+            });
+
             function sendMessage(message) {
                 $('#chat-box').append('<div class="chat-message user-message">' + message + '</div>');
                 $('#user-input').val('');
+                $('#user-input').css('height', 'auto');  // Reset height after sending the message
 
                 var spinner = '<div class="chat-message bot-message spinner"><i class="fas fa-circle-notch fa-spin"></i></div>';
                 $('#chat-box').append(spinner);
