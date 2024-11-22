@@ -1,0 +1,99 @@
+{
+    "output": {
+        "input": [
+            {
+                "content": "what variables are there related to sickle cell?",
+                "additional_kwargs": {},
+                "response_metadata": {},
+                "type": "human",
+                "name": "user_question",
+                "id": "user_question"
+            },
+            {
+                "content": "• DAGESICK (phv00123321): 77 age dad diagnosed -  sickle cell disease \n(from phs000284)",
+                "additional_kwargs": {},
+                "response_metadata": {},
+                "type": "ai",
+                "name": "KG_lookup_agent",
+                "id": null,
+                "invalid_tool_calls": [],
+                "extra_meta_data": {
+                    "knowledge_graph": {
+                        "nodes": [
+                            {
+                                "name": "Sickle Cell Trait",
+                                "category": [
+                                    "biolink:ThingWithTaxon",
+                                    "biolink:BiologicalEntity",
+                                    "biolink:NamedThing",
+                                    "biolink:Disease",
+                                    "biolink:DiseaseOrPhenotypicFeature"
+                                ],
+                                "equivalent_identifiers": [
+                                    "MEDDRA:10020021",
+                                    "NCIT:C39800",
+                                    "UMLS:C0037054",
+                                    "MEDDRA:10040656",
+                                    "MEDDRA:10040650",
+                                    "MEDDRA:10055612",
+                                    "SNOMEDCT:16402000",
+                                    "MESH:D012805",
+                                    "MEDDRA:10019174"
+                                ],
+                                "information_content": 85.5,
+                                "description": "An individual who is heterozygous for the mutation that causes sickle cell anemia.",
+                                "id": "UMLS:C0037054"
+                            },
+                            {
+                                "name": "DAGESICK",
+                                "category": [
+                                    "biolink:StudyVariable"
+                                ],
+                                "description": "77 age dad diagnosed -  sickle cell disease",
+                                "id": "phv00123321.v1.p1"
+                            },
+                            {
+                                "category": [
+                                    "biolink:Study"
+                                ],
+                                "name": "phs000284.v2.p1",
+                                "id": "phs000284.v2.p1"
+                            }
+                        ],
+                        "edges": [
+                            {
+                                "subject": "UMLS:C0037054",
+                                "predicate": "biolink:related_to",
+                                "predicate_label": "related to",
+                                "relation": "biolink:related_to",
+                                "relation_label": "related to",
+                                "object": "phv00123321.v1.p1",
+                                "provided_by": "renci.bdc.semanticsearch.annotator",
+                                "id": "b01acb3cc6297c65"
+                            },
+                            {
+                                "subject": "phv00123321.v1.p1",
+                                "predicate": "biolink:part_of",
+                                "predicate_label": "part of",
+                                "relation": "BFO:0000050",
+                                "relation_label": "part of",
+                                "object": "phs000284.v2.p1",
+                                "provided_by": "renci.bdc.semanticsearch.annotator",
+                                "id": "79c1fd76235547d3"
+                            }
+                        ]
+                    }
+                },
+                "tool_calls": [],
+                "example": false,
+                "usage_metadata": null
+            }
+        ],
+        "next": "KG_lookup",
+        "chat_history": []
+    },
+    "metadata": {
+        "run_id": "6de63e7e-eef5-489d-91f8-477f62f43fe4",
+        "feedback_tokens": []
+    }
+}
