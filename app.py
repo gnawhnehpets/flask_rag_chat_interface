@@ -126,6 +126,7 @@ def format_response(text):
 def get_response():
     user_message = request.form['message']
     api_url = os.getenv('API_URL')
+    api_url_kg = os.getenv('API_URL_KG')
     headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
 
     session_id = session.get('session_id', 'unknown')
@@ -133,113 +134,150 @@ def get_response():
     payload['session_id'] = session_id
 
     try:
-        # response = requests.post(api_url, json=payload, headers=headers)
-        # response.raise_for_status()
-        # response_json = response.json()
-        response_json={
-                            "output": {
-                                "input": [
-                                {
-                                    "content": "what variables are there related to sickle cell?",
-                                    "additional_kwargs": {},
-                                    "response_metadata": {},
-                                    "type": "human",
-                                    "name": "user_question",
-                                    "id": "user_question"
-                                },
-                                {
-                                    "content": "• DAGESICK (phv00123321): 77 age dad diagnosed -  sickle cell disease \n(from phs000284)",
-                                    "additional_kwargs": {},
-                                    "response_metadata": {},
-                                    "type": "ai",
-                                    "name": "KG_lookup_agent",
-                                    "id": None,
-                                    "invalid_tool_calls": [],
-                                    "extra_meta_data": {
-                                    "knowledge_graph": {
-                                        "nodes": [
-                                        {
-                                            "name": "Sickle Cell Trait",
-                                            "category": [
-                                            "biolink:ThingWithTaxon",
-                                            "biolink:BiologicalEntity",
-                                            "biolink:NamedThing",
-                                            "biolink:Disease",
-                                            "biolink:DiseaseOrPhenotypicFeature"
-                                            ],
-                                            "equivalent_identifiers": [
-                                            "MEDDRA:10020021",
-                                            "NCIT:C39800",
-                                            "UMLS:C0037054",
-                                            "MEDDRA:10040656",
-                                            "MEDDRA:10040650",
-                                            "MEDDRA:10055612",
-                                            "SNOMEDCT:16402000",
-                                            "MESH:D012805",
-                                            "MEDDRA:10019174"
-                                            ],
-                                            "information_content": 85.5,
-                                            "description": "An individual who is heterozygous for the mutation that causes sickle cell anemia.",
-                                            "id": "UMLS:C0037054"
-                                        },
-                                        {
-                                            "name": "DAGESICK",
-                                            "category": [
-                                            "biolink:StudyVariable"
-                                            ],
-                                            "description": "77 age dad diagnosed -  sickle cell disease",
-                                            "id": "phv00123321.v1.p1"
-                                        },
-                                        {
-                                            "category": [
-                                            "biolink:Study"
-                                            ],
-                                            "name": "phs000284.v2.p1",
-                                            "id": "phs000284.v2.p1"
-                                        }
-                                        ],
-                                        "edges": [
-                                        {
-                                            "subject": "UMLS:C0037054",
-                                            "predicate": "biolink:related_to",
-                                            "predicate_label": "related to",
-                                            "relation": "biolink:related_to",
-                                            "relation_label": "related to",
-                                            "object": "phv00123321.v1.p1",
-                                            "provided_by": "renci.bdc.semanticsearch.annotator",
-                                            "id": "b01acb3cc6297c65"
-                                        },
-                                        {
-                                            "subject": "phv00123321.v1.p1",
-                                            "predicate": "biolink:part_of",
-                                            "predicate_label": "part of",
-                                            "relation": "BFO:0000050",
-                                            "relation_label": "part of",
-                                            "object": "phs000284.v2.p1",
-                                            "provided_by": "renci.bdc.semanticsearch.annotator",
-                                            "id": "79c1fd76235547d3"
-                                        }
-                                        ]
-                                    }
-                                    },
-                                    "tool_calls": [],
-                                    "example": False,
-                                    "usage_metadata": None
-                                }
-                                ],
-                                "next": "KG_lookup",
-                                "chat_history": []
-                            },
-                            "metadata": {
-                                "run_id": "6de63e7e-eef5-489d-91f8-477f62f43fe4",
-                                "feedback_tokens": []
-                            }
-                        }
+        # RAG endpoint
+        print("*** RAG ***")
+        response = requests.post(api_url, json=payload, headers=headers)
+        response.raise_for_status()
+        response_json = response.json()
+        print(json.dumps(response_json, indent=2))
+
+        # KG endpoint
+        print("*** KG response ***")
+        print(api_url_kg)
+        print(payload)
+        print(headers)
         
-        bot_response = response_json.get('output', {}).get('input', [{}])[-1].get('content', 'Sorry, I did not understand that.')
-        knowledge_graph = response_json.get('output', {}).get('input', [{}])[-1].get('extra_meta_data', {}).get('knowledge_graph', {})
+        response_kg = requests.post(api_url_kg, json=payload, headers=headers)
+        response_kg.raise_for_status()
+        response_json_kg = response_kg.json()
+        print(json.dumps(response_json_kg, indent=2))
+        # response_json={
+        #                     "output": {
+        #                         "input": [
+        #                         {
+        #                             "content": "what variables are there related to sickle cell?",
+        #                             "additional_kwargs": {},
+        #                             "response_metadata": {},
+        #                             "type": "human",
+        #                             "name": "user_question",
+        #                             "id": "user_question"
+        #                         },
+        #                         {
+        #                             "content": "• DAGESICK (phv00123321): 77 age dad diagnosed -  sickle cell disease \n(from phs000284)",
+        #                             "additional_kwargs": {},
+        #                             "response_metadata": {},
+        #                             "type": "ai",
+        #                             "name": "KG_lookup_agent",
+        #                             "id": None,
+        #                             "invalid_tool_calls": [],
+        #                             "extra_meta_data": {
+        #                             "knowledge_graph": {
+        #                                 "nodes": [
+        #                                 {
+        #                                     "name": "Sickle Cell Trait",
+        #                                     "category": [
+        #                                     "biolink:ThingWithTaxon",
+        #                                     "biolink:BiologicalEntity",
+        #                                     "biolink:NamedThing",
+        #                                     "biolink:Disease",
+        #                                     "biolink:DiseaseOrPhenotypicFeature"
+        #                                     ],
+        #                                     "equivalent_identifiers": [
+        #                                     "MEDDRA:10020021",
+        #                                     "NCIT:C39800",
+        #                                     "UMLS:C0037054",
+        #                                     "MEDDRA:10040656",
+        #                                     "MEDDRA:10040650",
+        #                                     "MEDDRA:10055612",
+        #                                     "SNOMEDCT:16402000",
+        #                                     "MESH:D012805",
+        #                                     "MEDDRA:10019174"
+        #                                     ],
+        #                                     "information_content": 85.5,
+        #                                     "description": "An individual who is heterozygous for the mutation that causes sickle cell anemia.",
+        #                                     "id": "UMLS:C0037054"
+        #                                 },
+        #                                 {
+        #                                     "name": "DAGESICK",
+        #                                     "category": [
+        #                                     "biolink:StudyVariable"
+        #                                     ],
+        #                                     "description": "77 age dad diagnosed -  sickle cell disease",
+        #                                     "id": "phv00123321.v1.p1"
+        #                                 },
+        #                                 {
+        #                                     "category": [
+        #                                     "biolink:Study"
+        #                                     ],
+        #                                     "name": "phs000284.v2.p1",
+        #                                     "id": "phs000284.v2.p1"
+        #                                 }
+        #                                 ],
+        #                                 "edges": [
+        #                                 {
+        #                                     "subject": "UMLS:C0037054",
+        #                                     "predicate": "biolink:related_to",
+        #                                     "predicate_label": "related to",
+        #                                     "relation": "biolink:related_to",
+        #                                     "relation_label": "related to",
+        #                                     "object": "phv00123321.v1.p1",
+        #                                     "provided_by": "renci.bdc.semanticsearch.annotator",
+        #                                     "id": "b01acb3cc6297c65"
+        #                                 },
+        #                                 {
+        #                                     "subject": "phv00123321.v1.p1",
+        #                                     "predicate": "biolink:part_of",
+        #                                     "predicate_label": "part of",
+        #                                     "relation": "BFO:0000050",
+        #                                     "relation_label": "part of",
+        #                                     "object": "phs000284.v2.p1",
+        #                                     "provided_by": "renci.bdc.semanticsearch.annotator",
+        #                                     "id": "79c1fd76235547d3"
+        #                                 }
+        #                                 ]
+        #                             }
+        #                             },
+        #                             "tool_calls": [],
+        #                             "example": False,
+        #                             "usage_metadata": None
+        #                         }
+        #                         ],
+        #                         "next": "KG_lookup",
+        #                         "chat_history": []
+        #                     },
+        #                     "metadata": {
+        #                         "run_id": "6de63e7e-eef5-489d-91f8-477f62f43fe4",
+        #                         "feedback_tokens": []
+        #                     }
+        #                 }
+        print("*** KG graph***")
+
+    #     bot_response = response_json.get('output', {}).get('input', [{}])[-1].get('content', 'Sorry, I did not understand that.')
+    #     # knowledge_graph = response_json_kg.get('output', {}).get('input', [{}])[-1].get('extra_meta_data', {}).get('knowledge_graph', {})
+    #     knowledge_graph = response_json_kg.get('output', {}).get('output', [{}])[-1].get('extra', {}).get('knowledge_graph', {})
+    #     print(json.dumps(knowledge_graph, indent=2))
         
-        # Return bot response and graph data
+    #     # Return bot response and graph data
+    #     return jsonify({
+    #         'response': bot_response,
+    #         'knowledge_graph': knowledge_graph
+    #     })
+    # except requests.exceptions.RequestException as e:
+    #     logging.error(f"Request failed: {e}")
+    #     return jsonify({'response': 'An error occurred while processing your request.'})
+
+        # Extract bot response
+        output = response_json.get('output', {})
+        if isinstance(output, str):
+            bot_response = output  # Direct string response
+        elif isinstance(output, dict):
+            bot_response = output.get('input', [{}])[-1].get('content', 'Sorry, I did not understand that.')
+        else:
+            bot_response = 'Unexpected output format.'
+
+        # Extract knowledge graph
+        knowledge_graph = response_json_kg.get('output', {}).get('extra', {}).get('knowledge_graph', {})
+
         return jsonify({
             'response': bot_response,
             'knowledge_graph': knowledge_graph
@@ -247,7 +285,6 @@ def get_response():
     except requests.exceptions.RequestException as e:
         logging.error(f"Request failed: {e}")
         return jsonify({'response': 'An error occurred while processing your request.'})
-
 
 @app.route('/export_chat_history')
 def export_chat_history():
