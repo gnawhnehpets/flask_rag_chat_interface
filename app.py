@@ -218,6 +218,16 @@ def get_response():
                                             "object": "phs000284.v2.p1",
                                             "provided_by": "renci.bdc.semanticsearch.annotator",
                                             "id": "79c1fd76235547d3"
+                                        },
+                                        {
+                                            "subject": "phs000284.v2.p1",
+                                            "predicate": "biolink:part_of",
+                                            "predicate_label": "part of",
+                                            "relation": "BFO:0000050",
+                                            "relation_label": "part of",
+                                            "object": "phv00123321.v1.p1",
+                                            "provided_by": "renci.bdc.semanticsearch.annotator",
+                                            "id": "79c1fd76235547d2"
                                         }
                                         ]
                                     }

@@ -452,131 +452,223 @@
 //         d.fy = null;
 //     }
 // }
+
+    // working
+//     function renderGraph(data, containerId) {
+//     // Clear any existing graph content in the container
+//     d3.select(`#${containerId}`).select("svg").remove();
+
+//     const container = document.getElementById(containerId);
+//     const width = container.offsetWidth;
+//     const height = 300; // Fixed height for the graph
+
+//     // Create the SVG container
+//     const svg = d3.select(`#${containerId}`).append("svg")
+//         .attr("width", width)
+//         .attr("height", height);
+
+//     // Add links (edges)
+//     const link = svg.selectAll(".link")
+//         .data(data.edges)
+//         .enter().append("line")
+//         .attr("class", "link")
+//         .style("stroke", "#999")
+//         .style("stroke-width", 1.5);
+
+//     // Add edge tooltips
+//     const edgeTooltip = svg.selectAll(".edge-tooltip")
+//         .data(data.edges)
+//         .enter().append("foreignObject")
+//         .attr("class", "edge-tooltip")
+//         .attr("width", 200) // Tooltip width
+//         .attr("height", 100) // Tooltip height
+//         .append("xhtml:div")
+//         .style("font-size", "10px")
+//         .style("color", "#555")
+//         .style("background", "rgba(255, 255, 255, 0.9)")
+//         .style("padding", "5px")
+//         .style("border-radius", "5px")
+//         .style("box-shadow", "0px 2px 4px rgba(0, 0, 0, 0.2)")
+//         .html(d =>
+//             `<strong>${d.source.name} - ${d.predicate} - ${d.target.name}</strong><br>` +
+//             `<strong>${d.target.name} - ${d.relation} - ${d.source.name}</strong>`
+//         );
+
+//     // Add nodes
+//     const node = svg.selectAll(".node")
+//         .data(data.nodes)
+//         .enter().append("g")
+//         .attr("class", "node")
+//         .call(d3.drag()
+//             .on("start", dragstarted)
+//             .on("drag", dragged)
+//             .on("end", dragended));
+
+//     // Add circles for nodes
+//     node.append("circle")
+//         .attr("r", 8)
+//         .style("fill", "#69b3a2");
+
+//     // Add node tooltips
+//     const nodeTooltip = svg.selectAll(".node-tooltip")
+//         .data(data.nodes)
+//         .enter().append("foreignObject")
+//         .attr("class", "node-tooltip")
+//         .attr("width", 200) // Tooltip width
+//         .attr("height", 100) // Tooltip height
+//         .append("xhtml:div")
+//         .style("font-size", "10px")
+//         .style("color", "#333")
+//         .style("background", "rgba(255, 255, 255, 0.9)")
+//         .style("padding", "5px")
+//         .style("border-radius", "5px")
+//         .style("box-shadow", "0px 2px 4px rgba(0, 0, 0, 0.2)")
+//         .html(d =>
+//             `<strong>${d.name}</strong><br>` +
+//             `<strong>Category:</strong> ${
+//                 d.category.length === 1
+//                     ? d.category[0] // Single category, display inline
+//                     : "<br>" + d.category.map(cat => `&nbsp;&nbsp;&nbsp;&nbsp;- ${cat}`).join("<br>") // Multiple categories as a list
+//             }<br>` +
+//             `<strong>Description:</strong> ${d.description || "N/A"}`
+//         );
+
+//     // Simulation for force-directed layout
+//     const simulation = d3.forceSimulation(data.nodes)
+//         .force("link", d3.forceLink(data.edges).id(d => d.id).distance(200)) // Increased distance between connected nodes
+//         .force("charge", d3.forceManyBody().strength(-400)) // Stronger repulsion for better spacing
+//         .force("center", d3.forceCenter(width / 2, height / 2))
+//         .on("tick", ticked);
+
+//     function ticked() {
+//         // Update link positions
+//         link
+//             .attr("x1", d => d.source.x)
+//             .attr("y1", d => d.source.y)
+//             .attr("x2", d => d.target.x)
+//             .attr("y2", d => d.target.y);
+
+//         // Update edge tooltip positions
+//         svg.selectAll(".edge-tooltip")
+//             .attr("x", d => (d.source.x + d.target.x) / 2 - 100) // Center and align tooltip horizontally
+//             .attr("y", d => (d.source.y + d.target.y) / 2 - 50); // Center and align tooltip vertically
+
+//         // Update node positions
+//         node.attr("transform", d => `translate(${d.x},${d.y})`);
+
+//         // Update node tooltip positions
+//         svg.selectAll(".node-tooltip")
+//             .attr("x", d => d.x + 10) // Offset tooltip to the right
+//             .attr("y", d => d.y - 20); // Offset tooltip above the node
+//     }
+
+//     function dragstarted(event, d) {
+//         if (!event.active) simulation.alphaTarget(0.3).restart();
+//         d.fx = d.x;
+//         d.fy = d.y;
+//     }
+
+//     function dragged(event, d) {
+//         d.fx = event.x;
+//         d.fy = event.y;
+//     }
+
+//     function dragended(event, d) {
+//         if (!event.active) simulation.alphaTarget(0);
+//         d.fx = null;
+//         d.fy = null;
+//     }
+// }
     function renderGraph(data, containerId) {
-    // Clear any existing graph content in the container
-    d3.select(`#${containerId}`).select("svg").remove();
+        // Clear any existing graph content in the container
+        d3.select(`#${containerId}`).select("svg").remove();
 
-    const container = document.getElementById(containerId);
-    const width = container.offsetWidth;
-    const height = 300; // Fixed height for the graph
+        const container = document.getElementById(containerId);
+        const width = container.offsetWidth;
+        const height = 500; // Fixed height for the graph
 
-    // Create the SVG container
-    const svg = d3.select(`#${containerId}`).append("svg")
-        .attr("width", width)
-        .attr("height", height);
+        // Create the SVG container
+        const svg = d3.select(`#${containerId}`).append("svg")
+            .attr("width", width)
+            .attr("height", height);
 
-    // Add links (edges)
-    const link = svg.selectAll(".link")
-        .data(data.edges)
-        .enter().append("line")
-        .attr("class", "link")
-        .style("stroke", "#999")
-        .style("stroke-width", 1.5);
+        // Define arrowhead marker
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 15) // Controls the position of the arrowhead
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5") // Arrowhead shape
+            .attr("fill", "#999"); // Arrowhead color
 
-    // Add edge tooltips
-    const edgeTooltip = svg.selectAll(".edge-tooltip")
-        .data(data.edges)
-        .enter().append("foreignObject")
-        .attr("class", "edge-tooltip")
-        .attr("width", 200) // Tooltip width
-        .attr("height", 100) // Tooltip height
-        .append("xhtml:div")
-        .style("font-size", "10px")
-        .style("color", "#555")
-        .style("background", "rgba(255, 255, 255, 0.9)")
-        .style("padding", "5px")
-        .style("border-radius", "5px")
-        .style("box-shadow", "0px 2px 4px rgba(0, 0, 0, 0.2)")
-        .html(d =>
-            `<strong>${d.source.name} - ${d.predicate} - ${d.target.name}</strong><br>` +
-            `<strong>${d.target.name} - ${d.relation} - ${d.source.name}</strong>`
-        );
+        // Add links (edges)
+        const link = svg.selectAll(".link")
+            .data(data.edges)
+            .enter().append("line")
+            .attr("class", "link")
+            .attr("marker-end", "url(#arrowhead)") // Add the arrowhead marker
+            .style("stroke", "#999")
+            .style("stroke-width", 1.5);
 
-    // Add nodes
-    const node = svg.selectAll(".node")
-        .data(data.nodes)
-        .enter().append("g")
-        .attr("class", "node")
-        .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended));
+        // Add nodes
+        const node = svg.selectAll(".node")
+            .data(data.nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
 
-    // Add circles for nodes
-    node.append("circle")
-        .attr("r", 8)
-        .style("fill", "#69b3a2");
+        // Add circles for nodes
+        node.append("circle")
+            .attr("r", 8)
+            .style("fill", "#69b3a2");
 
-    // Add node tooltips
-    const nodeTooltip = svg.selectAll(".node-tooltip")
-        .data(data.nodes)
-        .enter().append("foreignObject")
-        .attr("class", "node-tooltip")
-        .attr("width", 200) // Tooltip width
-        .attr("height", 100) // Tooltip height
-        .append("xhtml:div")
-        .style("font-size", "10px")
-        .style("color", "#333")
-        .style("background", "rgba(255, 255, 255, 0.9)")
-        .style("padding", "5px")
-        .style("border-radius", "5px")
-        .style("box-shadow", "0px 2px 4px rgba(0, 0, 0, 0.2)")
-        .html(d =>
-            `<strong>${d.name}</strong><br>` +
-            `<strong>Category:</strong> ${
-                d.category.length === 1
-                    ? d.category[0] // Single category, display inline
-                    : "<br>" + d.category.map(cat => `&nbsp;&nbsp;&nbsp;&nbsp;- ${cat}`).join("<br>") // Multiple categories as a list
-            }<br>` +
-            `<strong>Description:</strong> ${d.description || "N/A"}`
-        );
+        // Add labels for nodes
+        node.append("text")
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .text(d => d.name);
 
-    // Simulation for force-directed layout
-    const simulation = d3.forceSimulation(data.nodes)
-        .force("link", d3.forceLink(data.edges).id(d => d.id).distance(200)) // Increased distance between connected nodes
-        .force("charge", d3.forceManyBody().strength(-400)) // Stronger repulsion for better spacing
-        .force("center", d3.forceCenter(width / 2, height / 2))
-        .on("tick", ticked);
+        // Simulation for force-directed layout
+        const simulation = d3.forceSimulation(data.nodes)
+            .force("link", d3.forceLink(data.edges).id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .on("tick", ticked);
 
-    function ticked() {
-        // Update link positions
-        link
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
+        function ticked() {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
 
-        // Update edge tooltip positions
-        svg.selectAll(".edge-tooltip")
-            .attr("x", d => (d.source.x + d.target.x) / 2 - 100) // Center and align tooltip horizontally
-            .attr("y", d => (d.source.y + d.target.y) / 2 - 50); // Center and align tooltip vertically
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        }
 
-        // Update node positions
-        node.attr("transform", d => `translate(${d.x},${d.y})`);
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
 
-        // Update node tooltip positions
-        svg.selectAll(".node-tooltip")
-            .attr("x", d => d.x + 10) // Offset tooltip to the right
-            .attr("y", d => d.y - 20); // Offset tooltip above the node
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
     }
-
-    function dragstarted(event, d) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-    }
-
-    function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-    }
-
-    function dragended(event, d) {
-        if (!event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-    }
-}
 
 
 
