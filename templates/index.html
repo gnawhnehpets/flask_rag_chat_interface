@@ -168,18 +168,15 @@
         }
 
         .graph-container {
-    position: relative;
-    display: block;
-    width: 100%; /* Expand to full width initially */
-    height: auto; /* Allow height to adjust dynamically */
-    overflow: visible; /* Ensure no content is clipped */
-    border: 1px solid #ddd; /* Optional for visual feedback */
-    background-color: #f9f9f9; /* Optional for aesthetics */
-    transition: width 0.2s ease, height 0.2s ease; /* Smooth resizing */
-}
-
-
-
+            position: relative;
+            display: block;
+            width: 100%; /* Expand to full width initially */
+            height: auto; /* Allow height to adjust dynamically */
+            overflow: visible; /* Ensure no content is clipped */
+            border: 1px solid #ddd; /* Optional for visual feedback */
+            background-color: #f9f9f9; /* Optional for aesthetics */
+            transition: width 0.2s ease, height 0.2s ease; /* Smooth resizing */
+        }
     </style>
 </head>
 
@@ -235,127 +232,174 @@
 
     <script>
         function renderGraph(data, containerId) {
-    // Clear any existing graph content
-    d3.select(`#${containerId}`).select("svg").remove();
+            // Clear any existing graph content
+            d3.select(`#${containerId}`).select("svg").remove();
+            d3.select(`#${containerId}`).select(".filter-container").remove();
 
-    const container = document.getElementById(containerId);
+            const container = document.getElementById(containerId);
 
-    // Initial dimensions for the container
-    const width = container.offsetWidth || 800; // Default width if offsetWidth is unavailable
-    const height = 500;
+            // Initial dimensions for the container
+            const width = container.offsetWidth || 800; // Default width if offsetWidth is unavailable
+            const height = 500;
 
-    // Create the SVG container
-    const svg = d3.select(`#${containerId}`).append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("viewBox", `0 0 ${width} ${height}`)
-        .attr("preserveAspectRatio", "xMidYMid meet");
+            // Create the SVG container
+            const svg = d3.select(`#${containerId}`).append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .attr("preserveAspectRatio", "xMidYMid meet");
 
-    // Define arrowhead marker
-    svg.append("defs").append("marker")
-        .attr("id", "arrowhead")
-        .attr("viewBox", "0 -5 10 10")
-        .attr("refX", 15)
-        .attr("refY", 0)
-        .attr("markerWidth", 6)
-        .attr("markerHeight", 6)
-        .attr("orient", "auto")
-        .append("path")
-        .attr("d", "M0,-5L10,0L0,5")
-        .attr("fill", "#999");
+            // Define arrowhead marker
+            svg.append("defs").append("marker")
+                .attr("id", "arrowhead")
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 15)
+                .attr("refY", 0)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto")
+                .append("path")
+                .attr("d", "M0,-5L10,0L0,5")
+                .attr("fill", "#999");
 
-    // Create a tooltip
-    const tooltip = d3.select(`#${containerId}`).append("div")
-        .attr("class", "tooltip")
-        .style("position", "absolute")
-        .style("visibility", "hidden")
-        .style("background", "rgba(0, 0, 0, 0.8)")
-        .style("color", "#fff")
-        .style("padding", "5px 10px")
-        .style("border-radius", "5px")
-        .style("font-size", "12px")
-        .style("pointer-events", "none");
+            // Create a tooltip
+            const tooltip = d3.select(`#${containerId}`).append("div")
+                .attr("class", "tooltip")
+                .style("position", "absolute")
+                .style("visibility", "hidden")
+                .style("background", "rgba(0, 0, 0, 0.8)")
+                .style("color", "#fff")
+                .style("padding", "5px 10px")
+                .style("border-radius", "5px")
+                .style("font-size", "12px")
+                .style("pointer-events", "none");
 
-    // Add links (edges)
-    const link = svg.selectAll(".link")
-        .data(data.edges)
-        .enter().append("line")
-        .attr("class", "link")
-        .attr("marker-end", "url(#arrowhead)")
-        .style("stroke", "#999")
-        .style("stroke-width", 1.5)
-        .on("mouseover", function (event, d) {
-            tooltip.html(`<strong>Relation:</strong> ${d.predicate_label || "Unknown"}`)
-                .style("visibility", "visible");
-        })
-        .on("mousemove", function (event) {
-            tooltip
-                .style("top", `${event.pageY + 10}px`)
-                .style("left", `${event.pageX + 10}px`);
-        })
-        .on("mouseout", function () {
-            tooltip.style("visibility", "hidden");
-        });
+            // Add links (edges)
+            const link = svg.selectAll(".link")
+                .data(data.edges)
+                .enter().append("line")
+                .attr("class", "link")
+                .attr("marker-end", "url(#arrowhead)")
+                .style("stroke", "#999")
+                .style("stroke-width", 1.5)
+                .on("mouseover", function (event, d) {
+                    tooltip.html(`<strong>Relation:</strong> ${d.predicate_label || "Unknown"}`)
+                        .style("visibility", "visible");
+                })
+                .on("mousemove", function (event, d) {
+                    const x = (d.source.x + d.target.x) / 2;
+                    const y = (d.source.y + d.target.y) / 2;
+                    tooltip
+                        .style("top", `${y}px`)
+                        .style("left", `${x}px`);
+                })
+                .on("mouseout", function () {
+                    tooltip.style("visibility", "hidden");
+                });
 
-    // Add nodes
-    const node = svg.selectAll(".node")
-        .data(data.nodes)
-        .enter().append("g")
-        .attr("class", "node")
-        .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended));
+            // Add nodes
+            const node = svg.selectAll(".node")
+                .data(data.nodes)
+                .enter().append("g")
+                .attr("class", "node")
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
 
-    node.append("circle")
-        .attr("r", 8)
-        .style("fill", "#69b3a2");
+            node.append("circle")
+                .attr("r", 8)
+                .style("fill", "#69b3a2");
 
-    node.append("text")
-        .attr("dx", 12)
-        .attr("dy", ".35em")
-        .text(d => d.name);
+            node.append("text")
+                .attr("dx", 12)
+                .attr("dy", ".35em")
+                .text(d => d.name);
 
-    // Force simulation
-    const simulation = d3.forceSimulation(data.nodes)
-        .force("link", d3.forceLink(data.edges).id(d => d.id).distance(100))
-        .force("charge", d3.forceManyBody().strength(-300))
-        .force("center", d3.forceCenter(width / 2, height / 2))
-        .on("tick", ticked);
+            // Force simulation
+            const simulation = d3.forceSimulation(data.nodes)
+                .force("link", d3.forceLink(data.edges).id(d => d.id).distance(100))
+                .force("charge", d3.forceManyBody().strength(-300))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .on("tick", ticked);
 
-    function ticked() {
-        link
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
+            function ticked() {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
 
-        node.attr("transform", d => `translate(${d.x},${d.y})`);
-    }
+                node.attr("transform", d => `translate(${d.x},${d.y})`);
+            }
 
-    function dragstarted(event, d) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-    }
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
 
-    function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-    }
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
 
-    function dragended(event, d) {
-        if (!event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-    }
-}
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
 
+            // Add checkboxes for filtering
+            const uniqueLabels = [...new Set(data.edges.map(edge => edge.predicate_label))];
+            const filterContainer = d3.select(`#${containerId}`).append("div")
+                .attr("class", "filter-container")
+                .style("margin", "10px 0");
 
+            uniqueLabels.forEach(label => {
+                const checkbox = filterContainer.append("div")
+                    .attr("class", "checkbox-container")
+                    .style("margin", "5px");
 
+                checkbox.append("input")
+                    .attr("type", "checkbox")
+                    .attr("id", `filter-${label}`)
+                    .attr("checked", true)
+                    .on("change", function () {
+                        const checked = this.checked;
+                        link.style("visibility", d => d.predicate_label === label && !checked ? "hidden" : "visible");
 
+                        // Update node visibility based on edge visibility
+                        const visibleEdges = data.edges.filter(edge => {
+                            const edgeCheckbox = document.getElementById(`filter-${edge.predicate_label}`);
+                            return edgeCheckbox && edgeCheckbox.checked;
+                        });
 
-    
+                        const visibleNodes = new Set();
+                        const hiddenNodes = new Set();
+
+                        // Determine which nodes to hide
+                        data.nodes.forEach(node => {
+                            const isSubject = visibleEdges.some(edge => edge.subject === node.id);
+                            const isObject = visibleEdges.some(edge => edge.object === node.id);
+                            const isPartOfAnyVisibleEdge = isSubject || isObject;
+
+                            if (!isPartOfAnyVisibleEdge) {
+                                hiddenNodes.add(node.id);
+                            } else {
+                                visibleNodes.add(node.id);
+                            }
+                        });
+
+                        // Show or hide nodes based on the filtering logic
+                        node.style("visibility", d => hiddenNodes.has(d.id) ? "hidden" : "visible");
+                    });
+
+                checkbox.append("label")
+                    .attr("for", `filter-${label}`)
+                    .text(label);
+            });
+        }
 
         $(document).ready(function () {
             // Auto-expand textarea as the user types
