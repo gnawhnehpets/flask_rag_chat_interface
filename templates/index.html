@@ -1,5 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <style>
+        .node {
+            transition: opacity 0.3s ease;
+        }
+        .link {
+            transition: visibility 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="graph-container"></div>
+    <script>
+        function updateVisibility(data, link, node) {
+    // Get all currently visible edges based on the state of checkboxes
+    const visibleEdges = data.edges.filter(edge => {
+        const checkbox = document.getElementById(`filter-${edge.predicate_label}`);
+        return checkbox && checkbox.checked;
+    });
+
+    // Create a set of all nodes connected by visible edges
+    const visibleNodeIds = new Set();
+    visibleEdges.forEach(edge => {
+        visibleNodeIds.add(edge.source); // Add the source node ID
+        visibleNodeIds.add(edge.target); // Add the target node ID
+    });
+
+    // Debugging logs
+    console.log("Visible edges:", visibleEdges);
+    console.log("Visible node IDs:", [...visibleNodeIds]);
+
+    // Update edge visibility
+    link.style("visibility", d => visibleEdges.includes(d) ? "visible" : "hidden");
+
+    // Update node visibility based on the recalculated visible nodes
+    node.style("visibility", d => visibleNodeIds.has(d.id) ? "visible" : "hidden");
+}
+
+
+// Checkbox event handler
+checkbox.append("input")
+    .attr("type", "checkbox")
+    .attr("id", `filter-${label}`)
+    .attr("checked", true) // Default state: all edges are visible
+    .on("change", function() {
+        // Recalculate visibility of edges and nodes whenever a checkbox is toggled
+        updateVisibility(data, link, node);
+    });
+
+        // function updateVisibility(data, link, node) {
+        //     // Get all visible edges based on the current state of checkboxes
+        //     const visibleEdges = data.edges.filter(edge => {
+        //         const checkbox = document.getElementById(`filter-${edge.predicate_label}`);
+        //         return checkbox && checkbox.checked;
+        //     });
+
+        //     // Create sets of visible node IDs based on the visible edges
+        //     const visibleNodeIds = new Set();
+        //     visibleEdges.forEach(edge => {
+        //         visibleNodeIds.add(edge.source); // Add the subject node
+        //         visibleNodeIds.add(edge.target); // Add the object node
+        //     });
+
+        //     // Update edge visibility
+        //     link.style("visibility", d => visibleEdges.includes(d) ? "visible" : "hidden");
+
+        //     // Update node visibility
+        //     node.style("visibility", d => visibleNodeIds.has(d.id) ? "visible" : "hidden");
+        // }
+
+        // // Checkbox event handler
+        // checkbox.append("input")
+        //     .attr("type", "checkbox")
+        //     .attr("id", `filter-${label}`)
+        //     .attr("checked", true) // Default state: all edges are visible
+        //     .on("change", function() {
+        //         // Update the visibility of edges and nodes whenever a checkbox is toggled
+        //         updateVisibility(data, link, node);
+        //     });
+        // function updateNodeVisibility(data, link, node) {
+        //     // Get all currently visible edges
+        //     const visibleEdges = data.edges.filter(edge => {
+        //         const checkbox = document.getElementById(`filter-${edge.predicate_label}`);
+        //         return checkbox && checkbox.checked;
+        //     });
+
+        //     // Create sets of nodes that are connected by visible edges
+        //     const connectedNodes = new Set();
+        //     visibleEdges.forEach(edge => {
+        //         connectedNodes.add(edge.source.id);
+        //         connectedNodes.add(edge.target.id);
+        //     });
+
+        //     // Update node visibility
+        //     node.style("opacity", d => connectedNodes.has(d.id) ? 1 : 0);
+        //     node.style("pointer-events", d => connectedNodes.has(d.id) ? "all" : "none");
+        // }
+
+        // // Update the checkbox event handler
+        // checkbox.append("input")
+        //     .attr("type", "checkbox")
+        //     .attr("id", `filter-${label}`)
+        //     .attr("checked", true)
+        //     .on("change", function() {
+        //         const checked = this.checked;
+        //         // Update edge visibility
+        //         link.style("visibility", d => 
+        //             d.predicate_label === label && !checked ? "hidden" : "visible"
+        //         );
+                
+        //         // Update node visibility based on connected edges
+        //         updateNodeVisibility(data, link, node);
+        //     });
+    </script>
+</body>
 
 <!-- <div id="graph-container" style="width: 100%; height: 500px; border: 1px solid #ccc;"></div> -->
 
