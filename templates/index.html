@@ -130,15 +130,6 @@
             }
         }
 
-        /* .graph-container {
-            margin: 10px 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            padding: 10px;
-            width: 100%;
-        } */
-
         .tooltip {
             position: absolute;
             visibility: hidden;
@@ -187,33 +178,6 @@
             transition: width 0.2s ease, height 0.2s ease;
             /* Smooth resizing */
         }
-
-        /* .chat-response-container {
-            display: flex;
-            flex-direction: row;
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        .response-container {
-            flex: 1; 
-            overflow-wrap: break-word; 
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        .graph-container {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: auto;
-    overflow: visible;
-    border: 1px solid #ddd; 
-    background-color: #f9f9f9; 
-    transition: width 0.2s ease, height 0.2s ease; 
-} */
     </style>
 </head>
 
@@ -419,8 +383,6 @@
                 d.fy = null;
             }
 
-
-
             // Once the simulation stabilizes, adjust the viewBox to fit the graph
             simulation.on("end", () => {
                 const bounds = g.node().getBBox();
@@ -440,15 +402,15 @@
             });
 
             const zoom = d3.zoom()
-    .scaleExtent([0.5, 3]) // Limit zoom levels (0.5x to 3x)
-    .on("zoom", (event) => {
-        g.attr("transform", event.transform); // Apply zoom and pan transformations
-    });
+                .scaleExtent([0.5, 3]) // Limit zoom levels (0.5x to 3x)
+                .on("zoom", (event) => {
+                    g.attr("transform", event.transform); // Apply zoom and pan transformations
+                });
 
-svg.call(zoom)
-    .on("dblclick.zoom", null) // Disable double-click to zoom
-    .transition()
-    .duration(750); // Smooth out zoom/pan responsiveness
+            svg.call(zoom)
+                .on("dblclick.zoom", null) // Disable double-click to zoom
+                .transition()
+                .duration(750); // Smooth out zoom/pan responsiveness
 
         }
 
