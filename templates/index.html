@@ -168,15 +168,43 @@
         }
 
         .graph-container {
+            flex: 1; /* Takes 50% width */
+            position: relative;
+            display: block;
+            width: 100%; /* Expand to full width initially */
+            height: auto; /* Allow height to adjust dynamically */
+            overflow: visible; /* Ensure no content is clipped */
+            border: 1px solid #ddd; /* Optional for visual feedback */
+            background-color: #f9f9f9; /* Optional for aesthetics */
+            transition: width 0.2s ease, height 0.2s ease; /* Smooth resizing */
+        }
+
+        /* .chat-response-container {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .response-container {
+            flex: 1; 
+            overflow-wrap: break-word; 
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .graph-container {
     position: relative;
     display: block;
-    width: 100%; /* Expand to full width initially */
-    height: auto; /* Allow height to adjust dynamically */
-    overflow: visible; /* Ensure no content is clipped */
-    border: 1px solid #ddd; /* Optional for visual feedback */
-    background-color: #f9f9f9; /* Optional for aesthetics */
-    transition: width 0.2s ease, height 0.2s ease; /* Smooth resizing */
-}
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    border: 1px solid #ddd; 
+    background-color: #f9f9f9; 
+    transition: width 0.2s ease, height 0.2s ease; 
+} */
 
 
 
@@ -201,6 +229,7 @@
     <div class="chat-container">
         <div class="chat-box" id="chat-box">
             <div class="chat-message bot-message">Hello! What can I help you find today?</div>
+
         </div>
         <div class="chat-input-container">
             <!-- Text area input -->
@@ -377,50 +406,95 @@
                 this.style.height = (this.scrollHeight) + 'px';  // Set height based on scrollHeight
             });
 
-
             function sendMessage(message) {
                 $('#chat-box').append('<div class="chat-message user-message">' + message + '</div>');
                 $('#user-input').val('');
                 $('#user-input').css('height', 'auto'); // Reset height after sending the message
 
-                var spinner = '<div class="chat-message bot-message spinner"><i class="fas fa-circle-notch fa-spin"></i></div>';
+                const spinner = '<div class="chat-message bot-message spinner"><i class="fas fa-circle-notch fa-spin"></i></div>';
                 $('#chat-box').append(spinner);
                 scrollToBottom();
 
                 $.post("{{ url_for('get_response') }}", { message: message }, function (data) {
-                $('#chat-box .spinner').remove();
+                    $('#chat-box .spinner').remove();
 
-                // Append the response to the chat box
-                const botMessage = `<div class="chat-message bot-message">${data.response}</div>`;
-                $('#chat-box').append(botMessage);
+                    // Create a container for the bot message and graph
+                    const responseContainer = `
+                        <div class="chat-response-container">
+                            <div class="response-container">${data.response}</div>
+                        </div>
+                    `;
+                    $('#chat-box').append(responseContainer);
 
-                // If a knowledge graph is present, append a graph container and render it
-                if (data.knowledge_graph) {
-                    const graphContainerId = `graph-container-${Date.now()}`;
-                    const graphContainer = `<div id="${graphContainerId}" class="graph-container"></div>`;
-                    $('#chat-box').append(graphContainer);
+                    // If a knowledge graph is present, append it to the response container
+                    if (data.knowledge_graph) {
+                        const graphContainerId = `graph-container-${Date.now()}`;
+                        const graphContainer = `<div id="${graphContainerId}" class="graph-container"></div>`;
+                        $('.chat-response-container:last').append(graphContainer); // Append to the last response container
 
-                    const graphData = {
-                        nodes: data.knowledge_graph.nodes.map(node => ({
-                            id: node.id,
-                            name: node.name,
-                            category: node.category
-                        })),
-                        edges: data.knowledge_graph.edges.map(edge => ({
-                            source: edge.subject,
-                            target: edge.object,
-                            predicate: edge.predicate,
-                            predicate_label: edge.predicate_label
-                        }))
-                    };
+                        const graphData = {
+                            nodes: data.knowledge_graph.nodes.map(node => ({
+                                id: node.id,
+                                name: node.name,
+                                category: node.category
+                            })),
+                            edges: data.knowledge_graph.edges.map(edge => ({
+                                source: edge.subject,
+                                target: edge.object,
+                                predicate: edge.predicate,
+                                predicate_label: edge.predicate_label
+                            }))
+                        };
 
-                    renderGraph(graphData, graphContainerId);
-                }
+                        renderGraph(graphData, graphContainerId);
+                    }
 
-                scrollToBottom();
-            });
-
+                    scrollToBottom();
+                });
             }
+            // function sendMessage(message) {
+            //     $('#chat-box').append('<div class="chat-message user-message">' + message + '</div>');
+            //     $('#user-input').val('');
+            //     $('#user-input').css('height', 'auto'); // Reset height after sending the message
+
+            //     var spinner = '<div class="chat-message bot-message spinner"><i class="fas fa-circle-notch fa-spin"></i></div>';
+            //     $('#chat-box').append(spinner);
+            //     scrollToBottom();
+
+            //     $.post("{{ url_for('get_response') }}", { message: message }, function (data) {
+            //     $('#chat-box .spinner').remove();
+
+            //     // Append the response to the chat box
+            //     const botMessage = `<div class="chat-message bot-message">${data.response}</div>`;
+            //     $('#chat-box').append(botMessage);
+
+            //     // If a knowledge graph is present, append a graph container and render it
+            //     if (data.knowledge_graph) {
+            //         const graphContainerId = `graph-container-${Date.now()}`;
+            //         const graphContainer = `<div id="${graphContainerId}" class="graph-container"></div>`;
+            //         $('#chat-box').append(graphContainer);
+
+            //         const graphData = {
+            //             nodes: data.knowledge_graph.nodes.map(node => ({
+            //                 id: node.id,
+            //                 name: node.name,
+            //                 category: node.category
+            //             })),
+            //             edges: data.knowledge_graph.edges.map(edge => ({
+            //                 source: edge.subject,
+            //                 target: edge.object,
+            //                 predicate: edge.predicate,
+            //                 predicate_label: edge.predicate_label
+            //             }))
+            //         };
+
+            //         renderGraph(graphData, graphContainerId);
+            //     }
+
+            //     scrollToBottom();
+            // });
+
+            // }
 
             function scrollToBottom() {
                 var chatBox = $('#chat-box');
