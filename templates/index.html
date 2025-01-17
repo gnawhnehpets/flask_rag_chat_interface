@@ -290,12 +290,12 @@
             // Create the SVG container
             const svg = d3.select(`#${containerId}`).append("svg")
                 .attr("width", width)
-                .attr("height", height)
-                .attr("viewBox", `0 0 ${width} ${height}`)
-                .attr("preserveAspectRatio", "xMidYMid meet");
+                .attr("height", height);
+
+            const g = svg.append("g"); // Group for all graph elements
 
             // Define arrowhead marker
-            svg.append("defs").append("marker")
+            g.append("defs").append("marker")
                 .attr("id", "arrowhead")
                 .attr("viewBox", "0 -5 10 10")
                 .attr("refX", 15)
@@ -308,7 +308,7 @@
                 .attr("fill", "#999");
 
             // Add links (edges)
-            const link = svg.selectAll(".link")
+            const link = g.selectAll(".link")
                 .data(data.edges)
                 .enter().append("line")
                 .attr("class", "link")
@@ -317,7 +317,7 @@
                 .style("stroke-width", 1.5);
 
             // Add edge labels
-            const edgeLabels = svg.selectAll(".edge-label")
+            const edgeLabels = g.selectAll(".edge-label")
                 .data(data.edges)
                 .enter().append("text")
                 .attr("class", "edge-label")
@@ -327,7 +327,7 @@
                 .text(d => d.predicate_label);
 
             // Add nodes
-            const node = svg.selectAll(".node")
+            const node = g.selectAll(".node")
                 .data(data.nodes)
                 .enter().append("g")
                 .attr("class", "node")
@@ -359,14 +359,17 @@
             node.on("mouseover", function (event, d) {
                 tooltip.style("visibility", "visible")
                     .html(`<strong>Name:</strong> ${d.name}<br>
-                       <strong>Category:</strong> ${d.category}<br>
-                       <strong>Description:</strong> ${d.description || "N/A"}`);
-            }).on("mousemove", function (event) {
-                tooltip.style("top", (event.pageY + 10) + "px")
-                    .style("left", (event.pageX + 10) + "px");
-            }).on("mouseout", function () {
-                tooltip.style("visibility", "hidden");
-            });
+               <strong>Category:</strong> ${d.category}<br>
+               <strong>Description:</strong> ${d.description || "N/A"}`);
+            })
+                .on("mousemove", function (event) {
+                    tooltip.style("top", (event.pageY + 10) + "px")
+                        .style("left", (event.pageX + 10) + "px");
+                })
+                .on("mouseout", function () {
+                    tooltip.style("visibility", "hidden");
+                });
+
 
             // Force simulation
             const simulation = d3.forceSimulation(data.nodes)
@@ -375,23 +378,6 @@
                 .force("center", d3.forceCenter(width / 2, height / 2))
                 .on("tick", ticked);
 
-            // function ticked() {
-            //     link
-            //         .attr("x1", d => d.source.x)
-            //         .attr("y1", d => d.source.y)
-            //         .attr("x2", d => d.target.x)
-            //         .attr("y2", d => d.target.y);
-
-            //     edgeLabels
-            //         .attr("x", d => (d.source.x + d.target.x) / 2)
-            //         .attr("y", d => (d.source.y + d.target.y) / 2)
-            //         .attr("transform", function(d) {
-            //             const angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x) * (180 / Math.PI);
-            //             return `rotate(${angle}, ${(d.source.x + d.target.x) / 2}, ${(d.source.y + d.target.y) / 2})`;
-            //         });
-
-            //     node.attr("transform", d => `translate(${d.x},${d.y})`);
-            // }
             function ticked() {
                 link
                     .attr("x1", d => d.source.x)
@@ -407,7 +393,7 @@
                         const dy = d.target.y - d.source.y;
                         const angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
-                        // If the angle is between -90 and -270 (upside down), flip it
+                        // Ensure the text is always upright
                         const flippedAngle = angle > 90 || angle < -90 ? angle + 180 : angle;
 
                         return `rotate(${flippedAngle}, ${(d.source.x + d.target.x) / 2}, ${(d.source.y + d.target.y) / 2})`;
@@ -415,6 +401,7 @@
 
                 node.attr("transform", d => `translate(${d.x},${d.y})`);
             }
+
             function dragstarted(event, d) {
                 if (!event.active) simulation.alphaTarget(0.3).restart();
                 d.fx = d.x;
@@ -431,10 +418,39 @@
                 d.fx = null;
                 d.fy = null;
             }
+
+
+
+            // Once the simulation stabilizes, adjust the viewBox to fit the graph
+            simulation.on("end", () => {
+                const bounds = g.node().getBBox();
+                const margin = 50; // Add some padding
+                const fullWidth = bounds.width + margin * 2;
+                const fullHeight = bounds.height + margin * 2;
+
+                // Calculate scale to fit the graph within the container
+                const scale = Math.min(width / fullWidth, height / fullHeight);
+
+                // Set the viewBox to include the graph with padding
+                svg.attr("viewBox", `${bounds.x - margin} ${bounds.y - margin} ${fullWidth} ${fullHeight}`);
+                svg.attr("preserveAspectRatio", "xMidYMid meet");
+
+                // Optionally apply a transformation to center and scale the graph
+                g.attr("transform", `translate(${(width - fullWidth * scale) / 2}, ${(height - fullHeight * scale) / 2}) scale(${scale})`);
+            });
+
+            const zoom = d3.zoom()
+    .scaleExtent([0.5, 3]) // Limit zoom levels (0.5x to 3x)
+    .on("zoom", (event) => {
+        g.attr("transform", event.transform); // Apply zoom and pan transformations
+    });
+
+svg.call(zoom)
+    .on("dblclick.zoom", null) // Disable double-click to zoom
+    .transition()
+    .duration(750); // Smooth out zoom/pan responsiveness
+
         }
-
-
-
 
 
         $(document).ready(function () {
