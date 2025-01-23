@@ -76,41 +76,24 @@ def get_response():
     payload['session_id'] = session_id
 
     try:
-        # RAG endpoint
-        print("*** RAG ***")
-        response = requests.post(api_url, json=payload, headers=headers)
-        response.raise_for_status()
-        response_json = response.json()
-        print(json.dumps(response_json, indent=2))
-
         # KG endpoint
+        print("*" * 20)
         print("*** KG response ***")
+        print("*" * 20)
         print(api_url_kg)
         print(payload)
-        print(headers)
         
-        response_kg = requests.post(api_url_kg, json=payload, headers=headers)
-        response_kg.raise_for_status()
-        response_json_kg = response_kg.json()
+        response_kg_raw = requests.post(api_url_kg, json=payload, headers=headers)
+        response_json_kg = response_kg_raw.json()
         print(json.dumps(response_json_kg, indent=2))
 
-        print("*** KG graph***")
-
-        # Extract bot response
-        output = response_json.get('output', {})
-        if isinstance(output, str):
-            bot_response = output  # Direct string response
-        elif isinstance(output, dict):
-            bot_response = output.get('input', [{}])[-1].get('content', 'Sorry, I did not understand that.')
-        else:
-            bot_response = 'Unexpected output format.'
-
-        # Extract knowledge graph
-        knowledge_graph = response_json_kg.get('output', {}).get('extra', {}).get('knowledge_graph', {})
+        # Extract kg endpoint output
+        response_kg = response_json_kg.get('output', {}).get('extra', {}).get('knowledge_graph', {})
+        response_output = response_json_kg.get('output', {}).get('output', {})
 
         return jsonify({
-            'response': bot_response,
-            'knowledge_graph': knowledge_graph
+            'response': response_output,
+            'knowledge_graph': response_kg
         })
     except requests.exceptions.RequestException as e:
         logging.error(f"Request failed: {e}")

@@ -323,9 +323,9 @@
             node.on("mouseover", function (event, d) {
                 tooltip.style("visibility", "visible")
                     .html(`<strong>Name:</strong> ${d.name}<br>
-               <strong>Category:</strong> ${d.category}<br>
-               <strong>Description:</strong> ${d.description || "N/A"}`);
-            })
+                            <strong>Category:</strong> ${d.category}<br>
+                            <strong>Description:</strong> ${d.description || "N/A"}`);
+                    })
                 .on("mousemove", function (event) {
                     tooltip.style("top", (event.pageY + 10) + "px")
                         .style("left", (event.pageX + 10) + "px");
